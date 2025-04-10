@@ -1,5 +1,4 @@
 import express from "express";
-import fs from "fs/promises";
 import axios from "axios";
 import { importJWK, SignJWT } from "jose";
 
@@ -16,8 +15,8 @@ app.get("/", (req, res) => {
 // Endpoint per ottenere JWT e Access Token
 app.get("/token", async (req, res) => {
   try {
-    const jwkRaw = await fs.readFile("key.jwk.json", "utf-8");
-    const jwk = JSON.parse(jwkRaw);
+    // ✅ Legge il JWK dalle env vars (come stringa JSON)
+    const jwk = JSON.parse(process.env.JWK);
     const privateKey = await importJWK(jwk, "RS256");
 
     const jwt = await new SignJWT({})
