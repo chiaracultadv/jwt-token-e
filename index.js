@@ -4,12 +4,11 @@ import axios from "axios";
 import { importJWK, SignJWT } from "jose";
 
 const app = express();
-const PORT = 3000;
 
 const CLIENT_ID = "87beb6b5-cc02-4046-8a68-074dbe4b8499";
 const AUDIENCE = "https://enel.in-voice.it/oauth2/token";
 
-// Endpoint base di test
+// Endpoint base
 app.get("/", (req, res) => {
   res.send("✅ Server attivo!");
 });
@@ -30,8 +29,6 @@ app.get("/token", async (req, res) => {
       .setExpirationTime("20m")
       .sign(privateKey);
 
-    console.log("🔐 JWT generato:", jwt);
-
     const response = await axios.post(
       AUDIENCE,
       new URLSearchParams({
@@ -48,11 +45,8 @@ app.get("/token", async (req, res) => {
       }
     );
 
-    console.log("✅ Access Token ricevuto:", response.data.access_token);
     res.json({ access_token: response.data.access_token });
-
   } catch (err) {
-    console.error("❌ Errore:", err.response?.data || err.message);
     res.status(500).json({
       error: true,
       message: err.response?.data || err.message,
@@ -60,6 +54,5 @@ app.get("/token", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server avviato su http://localhost:${PORT}`);
-});
+// 👇 ESPORTA per Vercel
+export default app;
